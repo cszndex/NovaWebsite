@@ -163,7 +163,7 @@ def finished():
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
 #API Handler
-@client.route('/api/<parameter>')
+@client.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
   TYPES = ["ip", "validate"]
   HEXED = encrypt(request.remote_addr)
@@ -171,6 +171,17 @@ def api(parameter):
   if parameter == TYPES[0]:
     return HEXED.hexdigest()
   elif parameter == TYPES[1]:
-    return "hello"
-  
+    DATA = request.get_json(silent=True)
+    
+    if not DATA or 'KEY' not in DATA or 'IP' not in DATA or 'CHECKPOINT' not in DATA:
+      return jsonify({"NOVA": False, "ERROR": "Invalid Arguments"}), 400
+    IP = DATA["IP"]
+    KEY = DATA["KEY"]
+    CHECKPOINT = DATA["CHECKPOINT"]
+    
+    DOCS = Keys.find_one({"IP": IP})
+    if DOCS:
+      if KEY == DOCS["KEY"] and IP == DOCS["IP"] and CHECKPOINT >= DOCS["CHECKPOINT"]:
+        return jsonify({"NOVA": True})
+    return jsonify({"NOVA": False, "ERROR": "Invalid Arguments"}), 400
   return abort(404)

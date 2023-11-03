@@ -3,3 +3,4 @@ pymongo
 flask-wtf
 wtforms
 werkzeug
+requests

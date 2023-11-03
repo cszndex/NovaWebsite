@@ -12,6 +12,16 @@
         }
       ],
       "destination": "https://key.novateam.xyz/getkey"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "api.novateam.xyz"
+        }
+      ],
+      "destination": "https://api.novateam.xyz/endpoint/"
     }
   ]
 }

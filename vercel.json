@@ -3,14 +3,6 @@
     { 
       "source": "/(.*)", 
       "destination": "/api/app" 
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        "type": "host",
-        "value": "key.novateam.xyz"
-      ],
-      "destination": "/getkey*"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/app" }
   ],
-  "redirect": [
+  "redirects": [
     { "source": "//key.novateam.xyz/", "destination": "//youtube.com", "permanent": false }
   ]
 }

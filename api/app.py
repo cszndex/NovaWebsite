@@ -169,7 +169,8 @@ def dex(param):
   TYPES = ["bladeball", "1winobby"]
   if param == TYPES[0]:
     return Response("loadstring(game:HttpGet('https://raw.githubusercontent.com/cszndex/NovaCollectives/main/Loader.lua'))()", content_type='text/plain')
-
+  elif param == TYPES[1]:
+    return Response("loadstring(game:HttpGet('https://raw.githubusercontent.com/cszndex/NovaCollectives/main/Scripts/Games/1WinObby'))()", content_type="text/plain")
   return abort(404)
 
 #API Handler

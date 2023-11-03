@@ -174,7 +174,7 @@ def dex(param):
   return abort(404)
 
 #API Handler
-@app.route('/api/<parameter>', methods=["GET", "POST"])
+@app.route('/endpoint/<parameter>', methods=["GET", "POST"])
 def api(parameter):
   TYPES = ["ip", "validate"]
   HEXED = encrypt(request.remote_addr)

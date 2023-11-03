@@ -1,7 +1,9 @@
 {
   "functions": {
     "api": {
-      "handler": "app.app"
+      "runtime": "python3.7",
+      "memory": 128,
+      "maxDuration": 10
     }
   },
   "rewrites": [

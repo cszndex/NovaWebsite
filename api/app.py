@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, g, flash, abort, jsonify
+from flask import Flask, Response, render_template, request, redirect, url_for, g, flash, abort, jsonify
 from pymongo import MongoClient
 from api.forms.handler import KeySystem, Tools
 from datetime import datetime

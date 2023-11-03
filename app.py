@@ -13,11 +13,11 @@ import string
 import os
 
 #App Handler
-client = Flask(__name__)
-client.config['SECRET_KEY'] = "nova"
-client.config['RECAPTCHA_PUBLIC_KEY'] = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-client.config['RECAPTCHA_PRIVATE_KEY'] = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-client.config['RECAPTCHA_DATA_ATTRS'] = {"theme": "light"}
+app = Flask(__name__)
+app.config['SECRET_KEY'] = "nova"
+app.config['RECAPTCHA_PUBLIC_KEY'] = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+app.config['RECAPTCHA_PRIVATE_KEY'] = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+app.config['RECAPTCHA_DATA_ATTRS'] = {"theme": "light"}
 
 MongoConnection = MongoClient("mongodb+srv://Zenith:ejaybaog@quantumix.smje85r.mongodb.net/?retryWrites=true&w=majority")
 Database = MongoConnection['Nova']
@@ -39,21 +39,21 @@ def convert(userid, url):
   return href
 
 #Error Handler
-@client.errorhandler(404)
+@app.errorhandler(404)
 def notfound(e):
   return render_template('error.html')
 
 #Admin
-@client.route('/analytics')
+@app.route('/analytics')
 def dashboard():
   return render_template('dashboard.html')
 
 #Routes Handler
-@client.route('/')
+@app.route('/')
 def home():
   return render_template('home.html')
 
-@client.route('/linkvertise', methods=['POST', 'GET'])
+@app.route('/linkvertise', methods=['POST', 'GET'])
 def tool():
   CONVERTED = None
   
@@ -65,11 +65,11 @@ def tool():
   
   return render_template('linkvertiser.html', CONVERTED=CONVERTED)
 
-@client.route('/scripts', methods=["GET"])
+@app.route('/scripts', methods=["GET"])
 def scripts():
   return render_template('scripts.html')
 
-@client.route('/getkey', methods=['POST', 'GET'])
+@app.route('/getkey', methods=['POST', 'GET'])
 def getkey():
   CHECKPOINT = request.args.get('checkpoint', type=int)
   HWID = request.args.get('hwid', '')
@@ -114,7 +114,7 @@ def getkey():
   else:
     return abort(404)
 
-@client.route('/getkey/validate', methods=['POST', 'GET'])
+@app.route('/getkey/validate', methods=['POST', 'GET'])
 def checkpoint():
   IP = encrypt(request.remote_addr)
   REFERER = request.headers.get('Referer')
@@ -142,7 +142,7 @@ def checkpoint():
   
   return "Nothing in here"
 
-@client.route('/getkey/finished', methods=['POST', 'GET'])
+@app.route('/getkey/finished', methods=['POST', 'GET'])
 def finished():
   KEY_ARGS = request.args.get('key', '')
   IP = encrypt(request.remote_addr)
@@ -163,7 +163,7 @@ def finished():
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
 #API Handler
-@client.route('/api/<parameter>', methods=["GET", "POST"])
+@app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
   TYPES = ["ip", "validate"]
   HEXED = encrypt(request.remote_addr)

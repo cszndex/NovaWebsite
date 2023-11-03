@@ -1,8 +1,16 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/app" }
-  ],
-  "redirects": [
-    { "source": "key.novateam.xyz", "destination": "[https://twitch.tv/endingwithali](https://twitch.tv/endingwithali)" }
+    { 
+      "source": "/(.*)", 
+      "destination": "/api/app" 
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        "type": "host",
+        "value": "key.novateam.xyz"
+      ],
+      "destination": "/getkey*"
+    }
   ]
 }

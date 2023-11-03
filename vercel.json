@@ -1,5 +1,8 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/app" }
+  ],
+  "redirects": [
+    { "source": "key.novateam.xyz", "destination": "[https://twitch.tv/endingwithali](https://twitch.tv/endingwithali)" }
   ]
 }

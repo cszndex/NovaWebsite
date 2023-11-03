@@ -3,6 +3,15 @@
     { "source": "/(.*)", "destination": "/api/app" }
   ],
   "redirects": [
-    { "source": "//key.novateam.xyz/", "destination": "//youtube.com", "permanent": false }
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "key.novateam.xyz"
+        }
+      ],
+      "destination": "https://github.com/AlgusDark"
+    }
   ]
 }

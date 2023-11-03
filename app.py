@@ -185,3 +185,6 @@ def api(parameter):
         return jsonify({"NOVA": True})
     return jsonify({"NOVA": False, "ERROR": "Invalid Arguments"}), 400
   return abort(404)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

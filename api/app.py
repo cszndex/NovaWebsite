@@ -23,6 +23,7 @@ MongoConnection = MongoClient("mongodb+srv://Zenith:ejaybaog@quantumix.smje85r.m
 Database = MongoConnection['Nova']
 Keys = Database['Keys']
 Users = Database['Users']
+Keys.create_index("CREATED", expireAfterSeconds=24 * 3600)
 
 #Functions
 def generate_key():
@@ -128,7 +129,7 @@ def checkpoint():
   
   if REFERER == "https://linkvertise.com/" and CURRENT == 3:
     KEY = generate_key()
-    Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
+    Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY, "CREATED": datetime.utcnow()}})
     return redirect(url_for('finished') + f"?key={KEY}")
   elif REFERER == "https://linkvertise.com/" and CURRENT == 2:
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})

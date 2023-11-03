@@ -1,5 +1,10 @@
 {
+  "functions": {
+    "api": {
+      "handler": "app.app"
+    }
+  },
   "rewrites": [
-    { "source": "(.*)", "destination": "./app" }
+    { "source": "(.*)", "destination": "api" }
   ]
 }

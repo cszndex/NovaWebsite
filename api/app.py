@@ -26,7 +26,7 @@ Users = Database['Users']
 
 #Functions
 def generate_key():
-  return 'nova_'+''.join(random.choices(string.ascii_letters + string.digits, k=15))
+  return ''.join(random.choices(string.ascii_letters + string.digits, k=20))
 
 def encrypt(x):
   v = x + "5gz"

@@ -164,14 +164,9 @@ def finished():
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
 #Scripts Handler
-@app.route('/script/<param>', methods=["GET"])
+@app.route('/utility', methods=["GET"])
 def dex(param):
-  TYPES = ["bladeball", "1winobby"]
-  if param == TYPES[0]:
-    return Response("loadstring(game:HttpGet('https://raw.githubusercontent.com/cszndex/NovaCollectives/main/Loader.lua'))()", content_type='text/plain')
-  elif param == TYPES[1]:
-    return Response("loadstring(game:HttpGet('https://raw.githubusercontent.com/cszndex/NovaCollectives/main/Scripts/Games/1WinObby'))()", content_type="text/plain")
-  return abort(404)
+  return render_template("dex.html")
 
 #API Handler
 @app.route('/endpoint/<parameter>', methods=["GET", "POST"])

@@ -22,6 +22,16 @@
         }
       ],
       "destination": "https://api.novateam.xyz/endpoint/"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "dex.novateam.xyz"
+        }
+      ],
+      "destination": "https://dex.novateam.xyz/utility"
     }
   ]
 }

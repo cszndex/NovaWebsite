@@ -165,7 +165,7 @@ def finished():
 
 #Scripts Handler
 @app.route('/utility', methods=["GET"])
-def dex(param):
+def dex():
   return render_template("dex.html")
 
 #API Handler

@@ -11,7 +11,7 @@
           "value": "key.novateam.xyz"
         }
       ],
-      "destination": "https://novateam.xyz/getkey/"
+      "destination": "https://novateam.xyz/getkey"
     },
     {
       "source": "/",

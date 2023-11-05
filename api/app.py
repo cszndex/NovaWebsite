@@ -104,12 +104,13 @@ def getkey():
       abort(404)
     else:
       if FORM.validate_on_submit():
+        CNV = convert(885916, url_for("checkpoint"))
         if CHECKPOINT == 3:
-          return redirect(URL[2])
+          return redirect(CNV)
         elif CHECKPOINT == 2:
-          return redirect(URL[1])
+          return redirect(CNV)
         elif CHECKPOINT == 1:
-          return redirect(URL[0])
+          return redirect(CNV)
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
   else:

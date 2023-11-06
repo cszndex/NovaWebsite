@@ -1,6 +1,8 @@
-from flask import Flask, Response, render_template, request, redirect, url_for, g, flash, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, g, flash, abort, jsonify
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 from pymongo import MongoClient
-from api.forms.handler import KeySystem, Tools
 from datetime import datetime
 import requests
 import base64
@@ -15,19 +17,18 @@ import os
 #App Handler
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "nova"
-app.config['RECAPTCHA_PUBLIC_KEY'] = "6LcA7LkoAAAAAGYF3EQworMXZfCocLwNfwm8NOg-"
-app.config['RECAPTCHA_PRIVATE_KEY'] = "6LcA7LkoAAAAAHlJ20AHcSJU1mBVCM5CZnSopPo-"
+app.config['RECAPTCHA_PUBLIC_KEY'] = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+app.config['RECAPTCHA_PRIVATE_KEY'] = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 app.config['RECAPTCHA_DATA_ATTRS'] = {"theme": "light"}
 
 MongoConnection = MongoClient("mongodb+srv://Zenith:ejaybaog@quantumix.smje85r.mongodb.net/?retryWrites=true&w=majority")
 Database = MongoConnection['Nova']
 Keys = Database['Keys']
 Users = Database['Users']
-Keys.create_index("CREATED", expireAfterSeconds=24 * 3600)
 
 #Functions
 def generate_key():
-  return ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+  return 'nova_'+''.join(random.choices(string.ascii_letters + string.digits, k=15))
 
 def encrypt(x):
   v = x + "5gz"
@@ -43,6 +44,16 @@ def convert(userid, url):
 @app.errorhandler(404)
 def notfound(e):
   return render_template('error.html')
+
+# Forms
+class KeySystem(FlaskForm):
+  captcha = RecaptchaField()
+  key_complete = RecaptchaField()
+  
+class Tools(FlaskForm):
+  captcha = RecaptchaField()
+  linkvertise_id = StringField('id', validators=[DataRequired()], render_kw={"placeholder": "Linkvertise ID (ex. 927181)"})
+  url = StringField('url', validators=[DataRequired()], render_kw={"placeholder": "URL"})
 
 #Admin
 @app.route('/analytics')
@@ -104,13 +115,12 @@ def getkey():
       abort(404)
     else:
       if FORM.validate_on_submit():
-        CNV = convert(885916, url_for("checkpoint"))
-        if CHECKPOINT == 3:
-          return redirect(CNV)
-        elif CHECKPOINT == 2:
-          return redirect(CNV)
-        elif CHECKPOINT == 1:
-          return redirect(CNV)
+        if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
+          return redirect(URL[2])
+        elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
+          return redirect(URL[1])
+        elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
+          return redirect(URL[0])
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
   else:
@@ -130,7 +140,8 @@ def checkpoint():
   
   if REFERER == "https://linkvertise.com/" and CURRENT == 3:
     KEY = generate_key()
-    Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY, "CREATED": datetime.utcnow()}})
+    Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
+    request.headers.get('Authorization', '')
     return redirect(url_for('finished') + f"?key={KEY}")
   elif REFERER == "https://linkvertise.com/" and CURRENT == 2:
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
@@ -164,13 +175,8 @@ def finished():
   
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
-#Scripts Handler
-@app.route('/utility', methods=["GET"])
-def dex():
-  return render_template("dex.html")
-
 #API Handler
-@app.route('/endpoint/<parameter>', methods=["GET", "POST"])
+@app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
   TYPES = ["ip", "validate"]
   HEXED = encrypt(request.remote_addr)

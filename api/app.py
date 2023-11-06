@@ -17,8 +17,8 @@ import os
 #App Handler
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "nova"
-app.config['RECAPTCHA_PUBLIC_KEY'] = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-app.config['RECAPTCHA_PRIVATE_KEY'] = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+app.config['RECAPTCHA_PUBLIC_KEY'] = "6LcA7LkoAAAAAGYF3EQworMXZfCocLwNfwm8NOg-"
+app.config['RECAPTCHA_PRIVATE_KEY'] = "6LcA7LkoAAAAAHlJ20AHcSJU1mBVCM5CZnSopPo-"
 app.config['RECAPTCHA_DATA_ATTRS'] = {"theme": "light"}
 
 MongoConnection = MongoClient("mongodb+srv://Zenith:ejaybaog@quantumix.smje85r.mongodb.net/?retryWrites=true&w=majority")

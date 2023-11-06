@@ -21,7 +21,7 @@
           "value": "api.novateam.xyz"
         }
       ],
-      "destination": "https://api.novateam.xyz/endpoint/"
+      "destination": "https://api.novateam.xyz/endpoint"
     },
     {
       "source": "/",

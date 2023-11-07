@@ -175,6 +175,11 @@ def finished():
   
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
+# Script Handler
+@app.route("/utility")
+def dex():
+  return render_template("dex.html")
+
 #API Handler
 @app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):

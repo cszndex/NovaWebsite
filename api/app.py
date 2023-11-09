@@ -25,6 +25,7 @@ MongoConnection = MongoClient("mongodb+srv://Zenith:ejaybaog@quantumix.smje85r.m
 Database = MongoConnection['Nova']
 Keys = Database['Keys']
 Users = Database['Users']
+Dex = Database['Dex']
 
 #Functions
 def generate_key():
@@ -181,9 +182,17 @@ def dex():
   return render_template("dex.html")
 
 #API Handler
+def api_get_executed():
+  DATA = Dex.find_one({"_id": "executes"})
+  if DATA:
+    DATA.get("total", 1)
+  return 1
+def api_increment_executes(recent):
+  Dex.update_one({"_id": "executes"}, {"$inc": {"total": 1}}, {"$set": {"latest": str(recent)}}, upsert=True)
+
 @app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
-  TYPES = ["ip", "validate"]
+  TYPES = ["ip", "validate", "executed"]
   HEXED = encrypt(request.remote_addr)
   
   if parameter == TYPES[0]:
@@ -192,7 +201,7 @@ def api(parameter):
     DATA = request.get_json(silent=True)
     
     if not DATA or 'KEY' not in DATA or 'IP' not in DATA or 'CHECKPOINT' not in DATA:
-      return jsonify({"NOVA": False, "ERROR": "Invalid Arguments"}), 400
+      return jsonify({"ERROR": "Invalid Arguments"}), 400
     IP = DATA["IP"]
     KEY = DATA["KEY"]
     CHECKPOINT = DATA["CHECKPOINT"]
@@ -200,6 +209,14 @@ def api(parameter):
     DOCS = Keys.find_one({"IP": IP})
     if DOCS:
       if KEY == DOCS["KEY"] and IP == DOCS["IP"] and CHECKPOINT >= DOCS["CHECKPOINT"]:
-        return jsonify({"NOVA": True})
-    return jsonify({"NOVA": False, "ERROR": "Invalid Arguments"}), 400
+        return jsonify({"NOVA": True, "SUCCESS": "Valid Credentials"}) 200
+    return jsonify({"ERROR": "Invalid Arguments"}), 400
+  elif parameter == TYPES[2]:
+    DATA = request.get_json(silent=True)
+    if not DATA or 'RECENT' not in DATA:
+      return jsonify({"ERROR": "Missing Arguments"}) 404
+    EXECUTE = DATA['RECENT']
+    if EXECUTE:
+      api_increment_executes(str(EXECUTE))
+      return jsonify({"SUCCESS": 'Executed Successful'}) 200
   return abort(404)

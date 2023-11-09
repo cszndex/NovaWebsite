@@ -187,8 +187,8 @@ def api_get_executed():
   if DATA:
     DATA.get("total", 1)
   return 1
-def api_increment_executes(recent):
-  Dex.update_one({"_id": "executes"}, {"$inc": {"total": 1}}, {"$set": {"latest": str(recent)}}, upsert=True)
+def api_increment_executes():
+  Dex.update_one({"_id": "executes"}, {"$inc": {"total": 1}}, upsert=True)
 
 @app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
@@ -217,6 +217,6 @@ def api(parameter):
       return jsonify({"ERROR": "Missing Arguments"}), 404
     EXECUTE = DATA['RECENT']
     if EXECUTE:
-      api_increment_executes(str(EXECUTE))
+      api_increment_executes()
       return jsonify({"SUCCESS": 'Executed Successful'}), 200
   return abort(404)

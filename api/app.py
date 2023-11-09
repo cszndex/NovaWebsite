@@ -66,14 +66,14 @@ def dashboard():
 def home():
   DATA = Dex.find_one({"_id": "executes"})
   
-  EXEC = 0
-  DLS = str(DATA['total'] / 2)
+  EXEC = DATA['total']
+  DLS = str(DATA['total'] // 2)
   
   if DATA['total'] >= 1000:
     if DATA['total'] % 1000 == 0:
-      return str(num // 1000) + "k"
+      EXEC = str(DATA['total'] // 1000) + "k"
     else:
-      return str(num / 1000) + "k"
+      EXEC = str(DATA['total'] / 1000) + "k"
   
   return render_template('home.html', EXEC=EXEC, DLS=DLS)
 

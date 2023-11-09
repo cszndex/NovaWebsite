@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     
     <link rel="icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1117169500106792972/1163495434153631745/OIG_3-modified.png?ex=653fc890&is=652d5390&hm=4ea01e505d3c1b53b6d7b1d68151fdb940e77d3e0ee8d1b014f1330b247a5710&">
     <meta name="theme-color" content="#0a101e">
@@ -73,8 +73,8 @@
        {% endfor %}
       {% endif %}
     {% endwith %}
-
-    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
+    
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 
     <script>
       const icon = document.getElementById('navbar-icon');

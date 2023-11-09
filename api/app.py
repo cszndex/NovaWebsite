@@ -209,14 +209,14 @@ def api(parameter):
     DOCS = Keys.find_one({"IP": IP})
     if DOCS:
       if KEY == DOCS["KEY"] and IP == DOCS["IP"] and CHECKPOINT >= DOCS["CHECKPOINT"]:
-        return jsonify({"NOVA": True, "SUCCESS": "Valid Credentials"}) 200
+        return jsonify({"NOVA": True, "SUCCESS": "Valid Credentials"}), 200
     return jsonify({"ERROR": "Invalid Arguments"}), 400
   elif parameter == TYPES[2]:
     DATA = request.get_json(silent=True)
     if not DATA or 'RECENT' not in DATA:
-      return jsonify({"ERROR": "Missing Arguments"}) 404
+      return jsonify({"ERROR": "Missing Arguments"}), 404
     EXECUTE = DATA['RECENT']
     if EXECUTE:
       api_increment_executes(str(EXECUTE))
-      return jsonify({"SUCCESS": 'Executed Successful'}) 200
+      return jsonify({"SUCCESS": 'Executed Successful'}), 200
   return abort(404)

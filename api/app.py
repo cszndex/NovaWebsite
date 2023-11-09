@@ -62,9 +62,20 @@ def dashboard():
   return render_template('dashboard.html')
 
 #Routes Handler
-@app.route('/')
+@app.route('/'
 def home():
-  return render_template('home.html')
+  DATA = Dex.find_one({"_id": "executes"})
+  
+  EXEC = 0
+  DLS = str(DATA['total'] / 2)
+  
+  if DATA['total'] >= 1000:
+    if DATA['total'] % 1000 == 0:
+      return str(num // 1000) + "k"
+    else:
+      return str(num / 1000) + "k"
+  
+  return render_template('home.html', EXEC=EXEC, DLS=DLS)
 
 @app.route('/linkvertise', methods=['POST', 'GET'])
 def linkvertise():

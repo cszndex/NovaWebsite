@@ -67,7 +67,7 @@ def home():
   return render_template('home.html')
 
 @app.route('/linkvertise', methods=['POST', 'GET'])
-def tool():
+def linkvertise():
   CONVERTED = None
   
   if request.method == "POST":

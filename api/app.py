@@ -62,7 +62,7 @@ def dashboard():
   return render_template('dashboard.html')
 
 #Routes Handler
-@app.route('/'
+@app.route('/')
 def home():
   DATA = Dex.find_one({"_id": "executes"})
   

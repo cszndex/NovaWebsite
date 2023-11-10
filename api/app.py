@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, g, flash, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, g, flash, abort, jsonify, make_response
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -217,13 +217,20 @@ def tool_bypass(url):
 @app.route('/tools/fluxus', methods=["POST", "GET"])
 def tools_fluxus():
   KEY = None
+  REFERER = request.headers.get('Referer')
+  NGKEY = request.cookies.get('GFG')
+  
   if request.method == "POST":
     URL = request.form.get("url")
     EXTRACT = tool_extract_hwid(URL)
     if EXTRACT:
       KEY = tool_bypass(EXTRACT)
       if KEY:
-        return render_template("flux.html", KEY=KEY)
+        resp = make_response(render_template('nexus.html'))
+        resp.set_cookie('NGKEY', KEY) 
+        return resp 
+  if REFERER == "https://linkvertise.com/" and NGKEY:
+    return render_template('flux.html', KEY=NGKEY)
   return render_template("flux.html", KEY=KEY)
 
 # Script Handler

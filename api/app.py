@@ -4,6 +4,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from pymongo import MongoClient
 from datetime import datetime
+from bs4 import BeautifulSoup
 import requests
 import base64
 import hashlib
@@ -13,6 +14,7 @@ import threading
 import random
 import string
 import os
+import re
 
 #App Handler
 app = Flask(__name__)
@@ -186,6 +188,43 @@ def finished():
     return render_template('validate.html', CURRENT=USERS['CHECKPOINT'], hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
   
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
+
+# Tools Handler
+def tool_extract_hwid():
+  match = re.search(r'HWID=([\w\d]+)', url)
+  return match.group(1) if match else None
+
+def tool_bypass(url):
+  Base_Url = f"https://fluxteam.net/android/checkpoint/start.php?HWID={hwid}"
+  Referrer = {
+    'Referer': "https://linkvertise.com/",
+    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"
+  }
+  session = requests.Session()
+  session.get(Base_Url, headers={'Referer': "https://fluxteam.net/"})
+  time.sleep(1)
+  session.get('https://fluxteam.net/android/checkpoint/check1.php', headers=Referrer)
+  session.get('https://fluxteam.net/android/checkpoint/check2.php', headers=Referrer)
+  session.get('https://fluxteam.net/android/checkpoint/check3.php', headers=Referrer)
+  time.sleep(1)
+  response = session.get("https://fluxteam.net/android/checkpoint/main.php", headers=Referrer)
+  time.sleep(1)
+  soup = BeautifulSoup(response.text, 'html.parser')
+  body_code = soup.select_one('body > main > code').get_text()
+  key = re.sub(r'\s+', '', body_code) + "\n"
+  return key
+
+@app.route('/tools/fluxus', methods=["POST", "GET"])
+def tools_fluxus():
+  KEY = None
+  if request.method == "POST":
+    URL = request.form.get("url")
+    EXTRACT = tool_extract_hwid(URL)
+    if EXTRACT:
+      KEY = tool_bypass(EXTRACT)
+      if KEY:
+        return render_template("flux.html", KEY=KEY)
+  return render_template("flux.html", KEY=KEY)
 
 # Script Handler
 @app.route("/utility")

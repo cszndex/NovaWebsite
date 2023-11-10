@@ -12,6 +12,7 @@
   font-family: "Poppins", Sans-Serif;
   transition: 0.065s ease;
   scroll-behavior: smooth;
+  text-decoration: none;
 }
 
 *::selection {

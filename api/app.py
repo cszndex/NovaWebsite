@@ -218,7 +218,7 @@ def tool_bypass(hwid):
 def tools_fluxus():
   KEY = None
   REFERER = request.headers.get('Referer')
-  NGKEY = request.cookies.get('GFG')
+  NGKEY = request.cookies.get('NGKEY')
   
   if request.method == "POST":
     URL = request.form.get("url")

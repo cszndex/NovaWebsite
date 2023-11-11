@@ -194,7 +194,7 @@ def tool_extract_hwid(url):
   match = re.search(r'HWID=([\w\d]+)', url)
   return match.group(1) if match else None
 
-def tool_bypass(url):
+def tool_bypass(hwid):
   Base_Url = f"https://fluxteam.net/android/checkpoint/start.php?HWID={hwid}"
   Referrer = {
     'Referer': "https://linkvertise.com/",

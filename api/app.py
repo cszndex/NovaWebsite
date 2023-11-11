@@ -190,7 +190,7 @@ def finished():
   return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
 
 # Tools Handler
-def tool_extract_hwid():
+def tool_extract_hwid(url):
   match = re.search(r'HWID=([\w\d]+)', url)
   return match.group(1) if match else None
 

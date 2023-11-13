@@ -230,6 +230,7 @@ def tools_fluxus():
         resp.set_cookie('NGKEY', KEY) 
         return resp 
   if REFERER == "https://linkvertise.com/" and NGKEY:
+    flash("Key Generated Successfully!")
     return render_template('flux.html', KEY=NGKEY)
   return render_template("flux.html", KEY=KEY)
 

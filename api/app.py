@@ -19,6 +19,10 @@ import re
 #App Handler
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "nova"
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['REMEMBER_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['REMEMBER_COOKIE_HTTPONLY'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = "6LcA7LkoAAAAAGYF3EQworMXZfCocLwNfwm8NOg-"
 app.config['RECAPTCHA_PRIVATE_KEY'] = "6LcA7LkoAAAAAHlJ20AHcSJU1mBVCM5CZnSopPo-"
 app.config['RECAPTCHA_DATA_ATTRS'] = {"theme": "light"}
@@ -130,17 +134,17 @@ def getkey():
     else:
       if request.method == "POST":
         if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
-          rep = make_response(redirect(URL[2])
-          rep.set_cookie('NGCH', value=str(3), httponly=True)
-          return rep
+          resp = make_response(redirect(URL[2])
+          resp.set_cookie('NGCH', str(3), httponly=True, secure=True)
+          return resp
         elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
-          rep = make_response(redirect(URL[1])
-          rep.set_cookie('NGCH', value=str(2), httponly=True)
-          return rep
+          resp = make_response(redirect(URL[1])
+          resp.set_cookie('NGCH', str(2), httponly=True, secure=True)
+          return resp
         elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
-          rep = make_response(redirect(URL[0]))
-          rep.set_cookie('NGCH', value=str(1), httponly=True))
-          return rep
+          resp = make_response(redirect(URL[0]))
+          resp.set_cookie('NGCH', str(1), httponly=True, secure=True)
+          return resp
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
   else:

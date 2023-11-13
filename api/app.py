@@ -192,7 +192,7 @@ def finished():
   KEY = None
   
   if USERS and USERS['CHECKPOINT'] == 3 and KEY_ARGS == USERS['KEY']:
-    if request.method == "POST:
+    if request.method == "POST":
       CAPTCHA_FINISHED = True
       KEY = KEY_ARGS
   else:

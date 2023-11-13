@@ -50,11 +50,9 @@
     <div class="article container-fluid text-center h-100">
       <div class="info w-100 p-md-5">
         <h1 class="reveal fs-1 text-start">Nova | GetKey [ {{ CURRENT }}/3 ]</h1>
-        <p class="text-wrap text-start fs-5 text-muted min-vw-30">Welcome to Nova Key System, please do the captcha and click continue to proceed to next checkpoint.</p>
+        <p class="text-wrap text-start fs-5 text-muted min-vw-30">Welcome to Nova Key System, please click continue to proceed to next checkpoint.</p>
         <hr>
         <form class="text-start" onsubmit="captchaSubmit()" method="POST">
-          {{ FORM.csrf_token }}
-          {{ FORM.captcha }}
           <button type="submit" class="continue-btn mt-2">Continue</button>
         </form>
       </div>

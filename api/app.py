@@ -128,13 +128,19 @@ def getkey():
     if CHECKPOINT > CURRENT or CHECKPOINT < CURRENT:
       abort(404)
     else:
-      if FORM.validate_on_submit():
+      if request.method == "POST":
         if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
-          return redirect(URL[2])
+          rep = make_response(redirect(URL[2])
+          rep.set_cookie('NGCH', 3, httponly = True)
+          return rep
         elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
-          return redirect(URL[1])
+          rep = make_response(redirect(URL[1])
+          rep.set_cookie('NGCH', 2, httponly = True)
+          return rep
         elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
-          return redirect(URL[0])
+          rep = make_response(redirect(URL[0]))
+          rep.set_cookie('NGCH', 1, httponly = True))
+          return rep
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
   else:
@@ -144,6 +150,7 @@ def getkey():
 def checkpoint():
   IP = encrypt(request.remote_addr)
   REFERER = request.headers.get('Referer')
+  NGCH = request.cookies.get("NGCH")
   
   USER = Keys.find_one({"IP": IP.hexdigest()})
   CURRENT = 0
@@ -152,15 +159,15 @@ def checkpoint():
   if USER:
     CURRENT = USER['CHECKPOINT']
   
-  if REFERER == "https://linkvertise.com/" and CURRENT == 3:
+  if REFERER == "https://linkvertise.com/" and CURRENT == 3 and NGCH == 3:
     KEY = generate_key()
     Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
     request.headers.get('Authorization', '')
     return redirect(url_for('finished') + f"?key={KEY}")
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 2:
+  elif REFERER == "https://linkvertise.com/" and CURRENT == 2 and NGCH == 2:
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
     return render_template('validate.html', CURRENT=CURRENT + 1, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 1:
+  elif REFERER == "https://linkvertise.com/" and CURRENT == 1 and NGCH == 1:
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
     return render_template('validate.html', CURRENT=CURRENT + 1 , hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
   else:

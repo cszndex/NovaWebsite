@@ -195,6 +195,7 @@ def finished():
     if request.method == "POST":
       CAPTCHA_FINISHED = True
       KEY = KEY_ARGS
+      return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
   else:
     flash('Dont try to bypass')
     return render_template('validate.html', CURRENT=USERS['CHECKPOINT'], hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))

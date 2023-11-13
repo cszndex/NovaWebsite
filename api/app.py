@@ -136,15 +136,15 @@ def getkey():
       if request.method == "POST":
         if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
           resp = make_response(redirect(URL[2])
-          resp.set_cookie('NGCH', "3")
+          resp.set_cookie('NGCH', CHECKPOINT)
           return resp
         elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
           resp = make_response(redirect(URL[1])
-          resp.set_cookie('NGCH', "2")
+          resp.set_cookie('NGCH', CHECKPOINT)
           return resp
         elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
           resp = make_response(redirect(URL[0]))
-          resp.set_cookie('NGCH', "1")
+          resp.set_cookie('NGCH', CHECKPOINT)
           return resp
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)

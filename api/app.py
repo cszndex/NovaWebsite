@@ -131,15 +131,15 @@ def getkey():
       if request.method == "POST":
         if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
           rep = make_response(redirect(URL[2])
-          rep.set_cookie('NGCH', 3, httponly = True)
+          rep.set_cookie('NGCH', value=str(3), httponly=True)
           return rep
         elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
           rep = make_response(redirect(URL[1])
-          rep.set_cookie('NGCH', 2, httponly = True)
+          rep.set_cookie('NGCH', value=str(2), httponly=True)
           return rep
         elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
           rep = make_response(redirect(URL[0]))
-          rep.set_cookie('NGCH', 1, httponly = True))
+          rep.set_cookie('NGCH', value=str(1), httponly=True))
           return rep
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
@@ -159,15 +159,15 @@ def checkpoint():
   if USER:
     CURRENT = USER['CHECKPOINT']
   
-  if REFERER == "https://linkvertise.com/" and CURRENT == 3 and NGCH == 3:
+  if REFERER == "https://linkvertise.com/" and CURRENT == 3 and NGCH == "3":
     KEY = generate_key()
     Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
     request.headers.get('Authorization', '')
     return redirect(url_for('finished') + f"?key={KEY}")
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 2 and NGCH == 2:
+  elif REFERER == "https://linkvertise.com/" and CURRENT == 2 and NGCH == "2":
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
     return render_template('validate.html', CURRENT=CURRENT + 1, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 1 and NGCH == 1:
+  elif REFERER == "https://linkvertise.com/" and CURRENT == 1 and NGCH == "1":
     Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
     return render_template('validate.html', CURRENT=CURRENT + 1 , hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
   else:

@@ -136,15 +136,15 @@ def getkey():
       if request.method == "POST":
         if CHECKPOINT == 3 and USERS["CHECKPOINT"] == 3:
           resp = make_response(redirect(URL[2])
-          resp.set_cookie('NGCH', "3", httponly=True, secure=True, samesite="Lax")
+          resp.set_cookie('NGCH', "3")
           return resp
         elif CHECKPOINT == 2 and USERS["CHECKPOINT"] == 2:
           resp = make_response(redirect(URL[1])
-          resp.set_cookie('NGCH', "2", httponly=True, secure=True, samesite="Lax")
+          resp.set_cookie('NGCH', "2")
           return resp
         elif CHECKPOINT == 1 and USERS["CHECKPOINT"] == 1:
           resp = make_response(redirect(URL[0]))
-          resp.set_cookie('NGCH', "1", httponly=True, secure=True, samesite="Lax")
+          resp.set_cookie('NGCH', "1")
           return resp
     
     return render_template('checkpoint.html', CURRENT=CURRENT, FORM=FORM)
@@ -192,7 +192,7 @@ def finished():
   KEY = None
   
   if USERS and USERS['CHECKPOINT'] == 3 and KEY_ARGS == USERS['KEY']:
-    if RECAPTCHA.validate_on_submit():
+    if request.method == "POST:
       CAPTCHA_FINISHED = True
       KEY = KEY_ARGS
   else:

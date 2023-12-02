@@ -222,7 +222,7 @@ def tool_bypass(hwid):
   time.sleep(1)
   soup = BeautifulSoup(response.text, 'html.parser')
   body_code = soup.select_one('body > main > code').get_text()
-  key = re.sub(r'\s+', '', body_code) + "\n"
+  key = re.sub(r'\s+', '', body_code)
   return key
 
 @app.route('/tools/fluxus', methods=["POST", "GET"])
@@ -307,8 +307,8 @@ def api(parameter):
           
           response = {
             "message": "✅ Key generated successfully",
-            "value": str(key),
-             "expiresAt": str(formatted_expiration)
+            "value": key,
+            "expiresAt": formatted_expiration
           }
           
           return jsonify(response), 200

@@ -299,15 +299,16 @@ def api(parameter):
         key = tool_bypass(hwid)
         if key:
           expiration_time = datetime.now() + timedelta(hours=24)
-          formatted_expiration = expiration_time.strftime("%B %d, %Y at %I:%M%p")
-         
-          generated_key = {
-            "value": str(key),
-            "expiresAt": str(formatted_expiration)
-          }
+          
+          gmt_plus_8 = timezone(timedelta(hours=8))
+          expiration_time_gmt_plus_8 = expiration_time_utc.astimezone(gmt_plus_8)
+          
+          formatted_expiration = expiration_time_gmt_plus_8.strftime("%B %d, %Y at %I:%M%p")
+          
           response = {
             "message": "✅ Key generated successfully",
-            "generatedKey": generated_key
+            "value": str(key),
+             "expiresAt": str(formatted_expiration)
           }
           
           return jsonify(response), 200

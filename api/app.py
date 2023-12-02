@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 import requests
 import base64
@@ -163,21 +163,22 @@ def checkpoint():
   
   if USER:
     CURRENT = USER['CHECKPOINT']
-  
-  if REFERER == "https://linkvertise.com/" and CURRENT == 3 and NGCH == "3":
-    KEY = generate_key()
-    Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
-    request.headers.get('Authorization', '')
-    return redirect(url_for('finished') + f"?key={KEY}")
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 2 and NGCH == "2":
-    Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
-    return render_template('validate.html', CURRENT=CURRENT + 1, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
-  elif REFERER == "https://linkvertise.com/" and CURRENT == 1 and NGCH == "1":
-    Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
-    return render_template('validate.html', CURRENT=CURRENT + 1 , hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
-  else:
-    flash('Dont try to bypass.')
-    return render_template('validate.html', CURRENT=CURRENT, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
+    if REFERER == "https://linkvertise.com/" and CURRENT == 3 and NGCH == "3":
+      KEY = generate_key()
+      if KEY:
+        Keys.update_one({"IP": IP.hexdigest()}, {"$set": {"KEY": KEY}})
+        resp = redirect(url_for('finished'))
+        resp.set_cookie("NGHKEY", KEY)
+        return resp
+    elif REFERER == "https://linkvertise.com/" and CURRENT == 2 and NGCH == "2":
+      Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
+      return render_template('validate.html', CURRENT=CURRENT + 1, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
+    elif REFERER == "https://linkvertise.com/" and CURRENT == 1 and NGCH == "1":
+      Keys.update_one({"IP": IP.hexdigest()}, {"$inc": {"CHECKPOINT": 1}})
+      return render_template('validate.html', CURRENT=CURRENT + 1 , hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
+    else:
+      flash('Dont try to bypass.')
+      return render_template('validate.html', CURRENT=CURRENT, hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
   
   return "Nothing in here"
 
@@ -185,6 +186,7 @@ def checkpoint():
 def finished():
   KEY_ARGS = request.args.get('key', '')
   IP = encrypt(request.remote_addr)
+  COOK = request.cookies.get("NGHKEY")
   
   USERS = Keys.find_one({"IP": IP.hexdigest()})
   CAPTCHA_FINISHED = False
@@ -193,9 +195,8 @@ def finished():
   
   if USERS and USERS['CHECKPOINT'] == 3 and KEY_ARGS == USERS['KEY']:
     if request.method == "POST":
-      CAPTCHA_FINISHED = True
-      KEY = KEY_ARGS
-      return render_template('finished.html', KEY=KEY, RECAPTCHA=RECAPTCHA, CAPTCHA_FINISHED=CAPTCHA_FINISHED, CHECKPOINT=USERS['CHECKPOINT'])
+      CAPTCHA_FINISHED = "True"
+      KEY = COOK
   else:
     flash('Dont try to bypass')
     return render_template('validate.html', CURRENT=USERS['CHECKPOINT'], hwid=IP.hexdigest(), REDIRECT_URL=url_for('getkey'))
@@ -206,7 +207,6 @@ def finished():
 def tool_extract_hwid(url):
   match = re.search(r'HWID=([\w\d]+)', url)
   return match.group(1) if match else None
-
 def tool_bypass(hwid):
   Base_Url = f"https://fluxteam.net/android/checkpoint/start.php?HWID={hwid}"
   Referrer = {
@@ -217,8 +217,6 @@ def tool_bypass(hwid):
   session.get(Base_Url, headers={'Referer': "https://fluxteam.net/"})
   time.sleep(1)
   session.get('https://fluxteam.net/android/checkpoint/check1.php', headers=Referrer)
-  session.get('https://fluxteam.net/android/checkpoint/check2.php', headers=Referrer)
-  session.get('https://fluxteam.net/android/checkpoint/check3.php', headers=Referrer)
   time.sleep(1)
   response = session.get("https://fluxteam.net/android/checkpoint/main.php", headers=Referrer)
   time.sleep(1)
@@ -263,7 +261,7 @@ def api_increment_executes():
 
 @app.route('/api/<parameter>', methods=["GET", "POST"])
 def api(parameter):
-  TYPES = ["ip", "validate", "executed"]
+  TYPES = ["ip", "validate", "executed", "fluxus"]
   HEXED = encrypt(request.remote_addr)
   
   if parameter == TYPES[0]:
@@ -290,4 +288,28 @@ def api(parameter):
     if EXECUTE:
       api_increment_executes()
       return jsonify({"SUCCESS": 'Executed Successful'}), 200
+  elif parameter == TYPES[3]:
+    data = request.get_json(silent=True)
+    if not data or 'hwid' not in data:
+      return jsonify({"ERROR": "Missing Arguments"}), 404
+    url = data["hwid"]
+    if url:
+      hwid = tool_extract_hwid(url)
+      if hwid:
+        key = tool_bypass(hwid)
+        if key:
+          expiration_time = datetime.now() + timedelta(hours=24)
+          formatted_expiration = expiration_time.strftime("%B %d, %Y at %I:%M%p")
+         
+          generated_key = {
+            "value": str(key),
+            "expiresAt": str(formatted_expiration)
+          }
+          response = {
+            "message": "✅ Key generated successfully",
+            "generatedKey": generated_key
+          }
+          
+          return jsonify(response), 200
+  
   return abort(404)

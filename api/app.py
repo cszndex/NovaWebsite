@@ -306,8 +306,9 @@ def api(parameter):
           formatted_expiration = expiration_time_gmt_plus_8.strftime("%B %d, %Y at %I:%M%p")
           
           response = {
-            "message": "✅ Key generated successfully",
             "value": key,
+            "message": "✅ Key generated successfully",
+            "hwid": hwid,
             "expiresAt": formatted_expiration
           }
           

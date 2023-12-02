@@ -298,10 +298,10 @@ def api(parameter):
       if hwid:
         key = tool_bypass(hwid)
         if key:
-          expiration_time = datetime.now() + timedelta(hours=24)
+          expiration_time = datetime.now(timezone.utc) + timedelta(hours=24)
           
           gmt_plus_8 = timezone(timedelta(hours=8))
-          expiration_time_gmt_plus_8 = expiration_time_utc.astimezone(gmt_plus_8)
+          expiration_time_gmt_plus_8 = expiration_time.astimezone(gmt_plus_8)
           
           formatted_expiration = expiration_time_gmt_plus_8.strftime("%B %d, %Y at %I:%M%p")
           
